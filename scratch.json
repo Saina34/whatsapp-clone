@@ -1,0 +1,36 @@
+{
+  "conversations": [
+    {
+      "id": "02785865-97e7-4e3d-9884-f43d2807b7e6",
+      "members": [
+        "aea53e6f-35c7-40f2-a711-d37402d02b55",
+        "f3f10984-ee59-4b70-bc74-e32c8632de25"
+      ],
+      "messages": []
+    },
+    {
+      "id": "0e674c7d-987f-4124-8eb7-da2d315a9b71",
+      "members": [
+        "aea53e6f-35c7-40f2-a711-d37402d02b55",
+        "f763ece7-cd88-4771-8f4d-14ce9298d30c"
+      ],
+      "messages": []
+    },
+    {
+      "id": "a0e037e9-25ea-481f-9013-00813c4818ac",
+      "members": [
+        "aea53e6f-35c7-40f2-a711-d37402d02b55",
+        "7e52aefa-0452-41cd-895b-c199b052db26"
+      ],
+      "messages": []
+    },
+    {
+      "id": "3ecfaf2a-3b82-449d-b494-cacc7ce14e58",
+      "members": [
+        "aea53e6f-35c7-40f2-a711-d37402d02b55",
+        "357e1a37-610f-44af-8026-a838dff1f54c"
+      ],
+      "messages": []
+    }
+  ]
+}

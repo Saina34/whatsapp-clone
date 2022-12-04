@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Sidebar from "./components/sidebar/Sidebar";
+import Chat from "./components/chat/Chat";
+import ContactList from "./components/contact-list/ContactList";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Routes,
+  Link,
+} from "react-router-dom";
 
-function App() {
+import { useSelector } from "react-redux";
+
+const App = () =>  {
+  const isOpen = useSelector((state) => state.contacts.contactListIsOpen);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <div className="app__body">
+        {isOpen && <ContactList />}
+        <Sidebar />
+        <Chat />
+      </div>
     </div>
   );
 }
