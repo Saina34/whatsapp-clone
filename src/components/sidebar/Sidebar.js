@@ -5,42 +5,45 @@ import DonutLargeIcon from "@mui/icons-material/DonutLarge";
 import ChatIcon from "@mui/icons-material/Chat";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import SidebarChat from "../sidebar-chat/SidebarChat";
 import db from "../../firebaseConfig";
-import { collection, where, query, onSnapshot } from "firebase/firestore";
 import { toggleContactListStatus } from "../../store/chat/contactsSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { collection, query, getDocs, where } from "firebase/firestore";
+import { updateConversations } from "../../store/chat/chatSlice";
+import Conversation from "../chat/Conversation";
 
 const Sidebar = () => {
-  const [rooms, setRooms] = useState([]);
+  const conversations = useSelector((state) => state.chat.conversations);
+  const currentContact = useSelector((state) => state.contacts.currentContact);
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
+  const fetchConversations = async () => {
+    const conversationsRef = collection(db, "conversations");
+    const q = query(
+      conversationsRef,
+      where("memberIds", "array-contains", currentContact._userId)
+    );
 
-  useEffect(() => {
-    const firestoreQuery = query(collection(db, "rooms"));
-    onSnapshot(firestoreQuery, (snapshot) => {
-      const roomsResult = [];
-      snapshot.forEach((roomSnapshot) => {
-        roomsResult.push(roomSnapshot.data());
-      });
+    const querySnapshot = await getDocs(q);
+    const fetchedConversations = [];
 
-      setRooms(roomsResult);
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data());
+      fetchedConversations.push(doc.data());
     });
 
-    // db.collection("rooms").onSnapshot((snapshot) =>
-    // setRooms(
-    //     snapshot.doc.map((doc) =>({
-    //         id: doc.id,
-    //         data: doc.data(),
-    //     }))
-    // )
-    // )
+    console.log(fetchedConversations);
+
+    dispatch(updateConversations(fetchedConversations));
+  };
+
+  useEffect(() => {
+    fetchConversations();
   }, []);
 
   return (
     <div className="sidebar">
       <div className="sidebar__header">
-        
         <Avatar />
 
         <div className="sidebar__headerRight">
@@ -62,9 +65,8 @@ const Sidebar = () => {
         </div>
       </div>
       <div className="sidebar__chats">
-        {/* <SidebarChat addNewChat /> */}
-        {rooms.map((room, key) => (
-          <SidebarChat key={key} id={key} name={room.name} />
+        {conversations.map((conversation, key) => (
+          <Conversation key={key} conversation={conversation} />
         ))}
       </div>
     </div>

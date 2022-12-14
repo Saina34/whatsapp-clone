@@ -1,55 +1,42 @@
 import { Avatar } from "@mui/material";
 import React from "react";
 import "./Contact.css";
-import { useSelector } from "react-redux";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  query,
-  getDocs,
-  where,
-} from "firebase/firestore";
+import { useSelector, useDispatch } from "react-redux";
+import { doc, setDoc, collection } from "firebase/firestore";
 import db from "../../firebaseConfig";
+import { updateConversation } from "../../store/chat/chatSlice";
 
 const Contact = ({ contact }) => {
   const currentContact = useSelector((state) => state.contacts.currentContact);
-
-  const fetchConversation = async (contactId) => {
+  const conversations = useSelector((state) => state.chat.conversations);
+  const dispatch = useDispatch();
+  const fetchConversation = async (contact) => {
     let conversationExists = false;
-    const conversations = [];
-    // console.log(currentContact);
-    const q = query(collection(db, "conversations"));
-
-    const querySnapshot = await getDocs(q);
-    // console.log([currentContact?._userId, contactId]);
-    querySnapshot.forEach((doc) => {
-      let convo = doc.data();
-      if (
-        convo.members.includes(currentContact?._userId) &&
-        convo.members.includes(contactId)
-      ) {
-        conversations.push(convo);
+    conversations.every((conversation) => {
+      if (conversation.members.includes(contact._userId)) {
+        dispatch(updateConversation(conversation));
+        conversationExists = true;
+        return false;
       }
+
+      return true;
     });
 
-    console.log(conversations);
-    // const docSnap = await getDoc(docRef);
-    // console.log(docSnap);
-    // if (conversationExists) {
-    // } else {
-    //   // const newConversationRef = doc(collection(db, "conversations"));
-    //   // await setDoc(newConversationRef, {
-    //   //   members: [currentContact?._userId, contactId],
-    //   //   messages: [],
-    //   // });
-    //   // console.log("conversation created")
-    // }
+    if (!conversationExists) {
+      const newConversationRef = doc(collection(db, "conversations"));
+      const conversation = {
+        memberIds: [currentContact._userId, contact._userId],
+        members: [currentContact, contact],
+        messages: [],
+      };
+      await setDoc(newConversationRef, conversation);
+      conversation.id = newConversationRef.id;
+      dispatch(updateConversation(conversation));
+    }
   };
   return (
     <div
-      onClick={() => fetchConversation(contact._userId)}
+      onClick={() => fetchConversation(contact)}
       className="contact"
       role="button"
     >
@@ -58,7 +45,7 @@ const Contact = ({ contact }) => {
       </div>
       <div className="contact__right">
         <p className="contact__name">{contact.name}</p>
-        <p className="contact__about">{contact.about}</p>
+        <p className="coact__about">{contact.about}</p>
       </div>
     </div>
   );
