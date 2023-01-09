@@ -23,11 +23,8 @@ export const chatSlice = createSlice({
       const conversation = JSON.parse(
         JSON.stringify(current(state.currentConversation))
       );
-      conversation.messages.push({
-        id: 1,
-        senderId: 1,
-        text: data.payload,
-      });
+
+      conversation.messages.push(data.payload);
 
       state.currentConversation = conversation;
     },

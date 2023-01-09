@@ -29,7 +29,8 @@ const Sidebar = () => {
 
     querySnapshot.forEach((doc) => {
       console.log(doc.data());
-      fetchedConversations.push(doc.data());
+      const docSnap = doc.data();
+      fetchedConversations.push({ ...docSnap, ...{ id: doc.id } });
     });
 
     console.log(fetchedConversations);
@@ -65,8 +66,8 @@ const Sidebar = () => {
         </div>
       </div>
       <div className="sidebar__chats">
-        {conversations.map((conversation, key) => (
-          <Conversation key={key} conversation={conversation} />
+        {conversations.map((conversation) => (
+          <Conversation key={conversation.id} conversation={conversation} />
         ))}
       </div>
     </div>
